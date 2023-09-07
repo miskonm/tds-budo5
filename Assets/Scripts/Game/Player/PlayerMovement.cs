@@ -1,11 +1,15 @@
 using UnityEngine;
 
-namespace TDS
+namespace TDS.Game.Player
 {
     public class PlayerMovement : MonoBehaviour
     {
         #region Variables
-
+        
+        [Header("Components")]
+        [SerializeField] private PlayerAnimation _animation;
+        
+        [Header("Settings")]
         [SerializeField] private float _speed = 5f;
 
         #endregion
@@ -24,13 +28,16 @@ namespace TDS
 
         private void Move()
         {
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+            // TODO: Nikita change to rb
+            Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            Vector2 velocity = input * _speed;
 
             Vector3 currentPosition = transform.position;
-            currentPosition.x += horizontal * _speed * Time.deltaTime;
-            currentPosition.y += vertical * _speed * Time.deltaTime;
+            currentPosition.x += velocity.x * Time.deltaTime;
+            currentPosition.y += velocity.y * Time.deltaTime;
             transform.position = currentPosition;
+            
+            _animation.SetSpeed(velocity.magnitude);
         }
 
         private void Rotate()

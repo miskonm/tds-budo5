@@ -1,12 +1,17 @@
 using UnityEngine;
 
-namespace TDS
+namespace TDS.Game.Player
 {
     public class PlayerAttack : MonoBehaviour
     {
         #region Variables
 
+        [Header("Components")]
+        [SerializeField] private PlayerAnimation _animation;
+
+        [Header("Settings")]
         [SerializeField] private GameObject _bulletPrefab;
+        [SerializeField] private Transform _bulletSpawnPositionTransform;
 
         #endregion
 
@@ -16,7 +21,7 @@ namespace TDS
         {
             if (Input.GetButtonDown("Fire1"))
             {
-                CreateBullet();
+                Fire();
             }
         }
 
@@ -26,7 +31,13 @@ namespace TDS
 
         private void CreateBullet()
         {
-            Instantiate(_bulletPrefab, transform.position, transform.rotation);
+            Instantiate(_bulletPrefab, _bulletSpawnPositionTransform.position, transform.rotation);
+        }
+
+        private void Fire()
+        {
+            _animation.PlayAttack();
+            CreateBullet();
         }
 
         #endregion
