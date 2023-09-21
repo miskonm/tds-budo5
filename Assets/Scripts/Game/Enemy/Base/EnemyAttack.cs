@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace TDS.Game.Enemy
@@ -9,22 +8,33 @@ namespace TDS.Game.Enemy
 
         [Header(nameof(EnemyAttack))]
         [SerializeField] private float _attackDelay = 1f;
+        [SerializeField] private EnemyAnimation _animation;
 
-        private IEnumerator _attackRoutine;
-        private WaitForSeconds _wait;
+        private bool _needAttack;
+        private float _nextAttackTime;
+
+        #endregion
+
+        #region Properties
+
+        protected EnemyAnimation Animation => _animation;
 
         #endregion
 
         #region Unity lifecycle
 
-        private void Awake()
+        private void Update()
         {
-            _wait = new WaitForSeconds(_attackDelay);
-        }
+            if (!_needAttack)
+            {
+                return;
+            }
 
-        private void OnDisable()
-        {
-            StopAttack();
+            if (Time.time >= _nextAttackTime)
+            {
+                _nextAttackTime = Time.time + _attackDelay;
+                OnPerformAttack();
+            }
         }
 
         #endregion
@@ -33,36 +43,21 @@ namespace TDS.Game.Enemy
 
         public void StartAttack()
         {
-            _attackRoutine = StartAttackInternal();
-            StartCoroutine(_attackRoutine);
+            _needAttack = true;
         }
 
         public void StopAttack()
         {
-            if (_attackRoutine != null)
-            {
-                StopCoroutine(_attackRoutine);
-                _attackRoutine = null;
-            }
+            _needAttack = false;
         }
 
         #endregion
 
         #region Protected methods
 
-        protected virtual void OnPerformAttack() { }
-
-        #endregion
-
-        #region Private methods
-
-        private IEnumerator StartAttackInternal()
+        protected virtual void OnPerformAttack()
         {
-            while (true)
-            {
-                OnPerformAttack();
-                yield return _wait;
-            }
+            _animation.PlayAttack();
         }
 
         #endregion

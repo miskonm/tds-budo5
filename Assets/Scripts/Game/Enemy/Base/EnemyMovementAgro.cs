@@ -8,6 +8,7 @@ namespace TDS.Game.Enemy
 
         [SerializeField] private TriggerObserver _triggerObserver;
         [SerializeField] private EnemyMovement _enemyMovement;
+        [SerializeField] private EnemyIdle _idle;
 
         #endregion
 
@@ -44,6 +45,18 @@ namespace TDS.Game.Enemy
             if (_enemyMovement != null)
             {
                 _enemyMovement.SetTarget(otherTransform);
+            }
+            
+            if (_idle != null)
+            {
+                if (otherTransform == null)
+                {
+                    _idle.Activate();
+                }
+                else
+                {
+                    _idle.Deactivate();
+                }
             }
         }
 

@@ -8,6 +8,7 @@ namespace TDS.Game.Enemy
         #region Variables
 
         [SerializeField] private UnitHp _hp;
+        [SerializeField] private EnemyAnimation _animation;
 
         #endregion
 
@@ -27,8 +28,12 @@ namespace TDS.Game.Enemy
 
         private void OnEnable()
         {
-            OnHpChanged(_hp.Current);
             _hp.OnChanged += OnHpChanged;
+        }
+
+        private void Start()
+        {
+            OnHpChanged(_hp.Current);
         }
 
         private void OnDisable()
@@ -48,7 +53,7 @@ namespace TDS.Game.Enemy
             }
 
             IsDead = true;
-            // TODO: Nikita play animation
+            _animation.PlayDeath();
             OnHappened?.Invoke();
         }
 

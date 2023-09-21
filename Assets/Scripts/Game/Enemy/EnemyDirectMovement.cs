@@ -28,6 +28,7 @@ namespace TDS.Game.Enemy
         private void OnDisable()
         {
             _rb.velocity = Vector2.zero;
+            Animation.SetSpeed(0);
         }
 
         #endregion
@@ -40,6 +41,7 @@ namespace TDS.Game.Enemy
 
             if (_target == null)
             {
+                Animation.SetSpeed(0);
                 _rb.velocity = Vector2.zero;
             }
         }
@@ -52,6 +54,8 @@ namespace TDS.Game.Enemy
         {
             Vector3 direction = (_target.position - transform.position).normalized;
             _rb.velocity = direction * +_speed;
+            transform.up = direction;
+            Animation.SetSpeed(_speed);
         }
 
         #endregion
