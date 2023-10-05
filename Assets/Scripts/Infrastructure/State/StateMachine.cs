@@ -13,7 +13,7 @@ namespace TDS.Infrastructure.State
 
         #region Public methods
 
-        public void Enter<T>() where T : IState
+        public void Enter<T>() where T : class, IState
         {
             _currentState?.Exit();
             T newState = Create<T>();
@@ -25,9 +25,9 @@ namespace TDS.Infrastructure.State
 
         #region Private methods
 
-        private T Create<T>() where T : IExitableState
+        private T Create<T>() where T : class, IExitableState
         {
-            return Activator.CreateInstance<T>();
+            return Activator.CreateInstance(typeof(T), args: ServiceLocator.Instance) as T;
         }
 
         #endregion

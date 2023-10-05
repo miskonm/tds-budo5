@@ -55,6 +55,22 @@ namespace TDS.Infrastructure.Locator
             _servicesByTypes.Add(key, service);
         }
 
+        public void RegisterMonoBeh<T>() where T : MonoBehaviour, IService
+        {
+            Type key = typeof(T);
+            if (_servicesByTypes.ContainsKey(key))
+            {
+                Debug.LogError($"[{LogTag}:{nameof(RegisterMonoBeh)}] Duplicate register of services '{key}'!");
+                return;
+            }
+
+            GameObject go = new(typeof(T).Name);
+            DontDestroyOnLoad(go);
+            T component = go.AddComponent<T>();
+
+            _servicesByTypes.Add(key, component);
+        }
+
         public void Unregister<T>() where T : class, IService
         {
             Type key = typeof(T);

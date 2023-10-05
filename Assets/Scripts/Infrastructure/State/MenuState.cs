@@ -4,21 +4,28 @@ using UnityEngine;
 
 namespace TDS.Infrastructure.State
 {
-    public class MenuState : IState
+    public class MenuState : AppState
     {
-        public void Exit()
+        #region Setup/Teardown
+
+        public MenuState(ServiceLocator serviceLocator) : base(serviceLocator) { }
+
+        #endregion
+
+        #region Public methods
+
+        public override void Enter()
         {
-            Debug.LogError($"MenuState Exit");
+            Debug.LogError("MenuState Enter");
+
+            ServiceLocator.Get<SceneLoadingService>().LoadScene(Scene.Menu);
         }
 
-        public void Enter()
+        public override void Exit()
         {
-            Debug.LogError($"MenuState Enter");
-
-            SceneLoadingService sceneLoadingService = ServiceLocator.Instance.Get<SceneLoadingService>();
-            sceneLoadingService.LoadScene(Scene.Menu);
-            
-            
+            Debug.LogError("MenuState Exit");
         }
+
+        #endregion
     }
 }
