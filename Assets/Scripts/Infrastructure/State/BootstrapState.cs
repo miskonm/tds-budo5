@@ -1,8 +1,9 @@
 using TDS.Infrastructure.Locator;
 using TDS.Services.Coroutine;
+using TDS.Services.Gameplay;
+using TDS.Services.LevelManagement;
 using TDS.Services.Mission;
 using TDS.Services.SceneLoading;
-using UnityEngine;
 
 namespace TDS.Infrastructure.State
 {
@@ -18,19 +19,19 @@ namespace TDS.Infrastructure.State
 
         public override void Enter()
         {
-            Debug.LogError("BootstrapState Enter");
-
-            ServiceLocator.Register(new SceneLoadingService());
-            ServiceLocator.Register(new MissionGameService());
+            SceneLoadingService sceneLoadingService = new();
+            ServiceLocator.Register(sceneLoadingService);
+            MissionGameService missionGameService = new();
+            ServiceLocator.Register(missionGameService);
+            LevelManagementService levelManagementService = new(sceneLoadingService);
+            ServiceLocator.Register(levelManagementService);
             ServiceLocator.RegisterMonoBeh<CoroutineRunner>();
+            ServiceLocator.Register(new GameplayService(missionGameService, levelManagementService, StateMachine));
 
             StateMachine.Enter<MenuState>();
         }
 
-        public override void Exit()
-        {
-            Debug.LogError("BootstrapState Exit");
-        }
+        public override void Exit() { }
 
         #endregion
     }

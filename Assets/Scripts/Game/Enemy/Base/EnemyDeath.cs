@@ -10,6 +10,13 @@ namespace TDS.Game.Enemy
         [SerializeField] private UnitHp _hp;
         [SerializeField] private EnemyAnimation _animation;
 
+        [Header("Components")]
+        [SerializeField] private EnemyMovement _movement;
+        [SerializeField] private EnemyAttack _attack;
+        [SerializeField] private Collider2D _bodyCollider;
+        [SerializeField] private Collider2D _attackAgroCollider;
+        [SerializeField] private Collider2D _moveAgroCollider;
+
         #endregion
 
         #region Events
@@ -26,14 +33,14 @@ namespace TDS.Game.Enemy
 
         #region Unity lifecycle
 
-        private void OnEnable()
-        {
-            _hp.OnChanged += OnHpChanged;
-        }
-
         private void Start()
         {
             OnHpChanged(_hp.Current);
+        }
+
+        private void OnEnable()
+        {
+            _hp.OnChanged += OnHpChanged;
         }
 
         private void OnDisable()
@@ -53,6 +60,13 @@ namespace TDS.Game.Enemy
             }
 
             IsDead = true;
+
+            _movement.Deactivate();
+            _attack.Deactivate();
+            _bodyCollider.enabled = false;
+            _moveAgroCollider.enabled = false;
+            _attackAgroCollider.enabled = false;
+
             _animation.PlayDeath();
             OnHappened?.Invoke(this);
         }

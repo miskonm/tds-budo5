@@ -1,6 +1,5 @@
 using TDS.Infrastructure.Locator;
 using TDS.Services.SceneLoading;
-using UnityEngine;
 
 namespace TDS.Infrastructure.State
 {
@@ -16,15 +15,10 @@ namespace TDS.Infrastructure.State
 
         public override void Enter()
         {
-            Debug.LogError("MenuState Enter");
-
             ServiceLocator.Get<SceneLoadingService>().LoadScene(Scene.Menu);
         }
 
-        public override void Exit()
-        {
-            Debug.LogError("MenuState Exit");
-        }
+        public override void Exit() { }
 
         #endregion
     }

@@ -1,6 +1,5 @@
 using System;
 using TDS.Infrastructure.Locator;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace TDS.Services.Mission
@@ -25,7 +24,6 @@ namespace TDS.Services.Mission
 
         public void Dispose()
         {
-            Debug.LogError("MissionService Dispose");
             _currentMission.OnCompleted -= OnMissionCompleted;
             _currentMission.Dispose();
             _currentMission = null;
@@ -33,8 +31,6 @@ namespace TDS.Services.Mission
 
         public void Initialize()
         {
-            Debug.LogError("MissionService Initialize");
-
             MissionHolder holder = Object.FindObjectOfType<MissionHolder>();
             _currentMission = _factory.Create(holder.MissionCondition);
             _currentMission.OnCompleted += OnMissionCompleted;
@@ -47,7 +43,6 @@ namespace TDS.Services.Mission
 
         private void OnMissionCompleted()
         {
-            Debug.LogError("Mission COMPLETED!");
             OnCompleted?.Invoke();
         }
 

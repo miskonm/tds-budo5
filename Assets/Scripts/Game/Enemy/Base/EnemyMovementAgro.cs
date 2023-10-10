@@ -9,6 +9,9 @@ namespace TDS.Game.Enemy
         [SerializeField] private TriggerObserver _triggerObserver;
         [SerializeField] private EnemyMovement _enemyMovement;
         [SerializeField] private EnemyIdle _idle;
+        [SerializeField] private LayerMask _obstacleMask;
+
+        private bool _isFollow;
 
         #endregion
 
@@ -16,28 +19,42 @@ namespace TDS.Game.Enemy
 
         private void OnEnable()
         {
-            _triggerObserver.OnEnter += OnObserverEnter;
             _triggerObserver.OnExit += OnObserverExit;
+            _triggerObserver.OnStay += OnObserverStay;
         }
 
         private void OnDisable()
         {
-            _triggerObserver.OnEnter -= OnObserverEnter;
             _triggerObserver.OnExit -= OnObserverExit;
+            _triggerObserver.OnStay -= OnObserverStay;
         }
 
         #endregion
 
         #region Private methods
 
-        private void OnObserverEnter(Collider2D other)
-        {
-            SetTarget(other.transform);
-        }
-
         private void OnObserverExit(Collider2D other)
         {
+            _isFollow = false;
             SetTarget(null);
+        }
+
+        private void OnObserverStay(Collider2D other)
+        {
+            if (_isFollow)
+            {
+                return;
+            }
+
+            Vector3 direction = other.transform.position - transform.position;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, _obstacleMask);
+            if (hit.transform != null)
+            {
+                return;
+            }
+
+            _isFollow = true;
+            SetTarget(other.transform);
         }
 
         private void SetTarget(Transform otherTransform)
@@ -46,7 +63,7 @@ namespace TDS.Game.Enemy
             {
                 _enemyMovement.SetTarget(otherTransform);
             }
-            
+
             if (_idle != null)
             {
                 if (otherTransform == null)
