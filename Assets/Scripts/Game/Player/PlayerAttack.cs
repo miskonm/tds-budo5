@@ -1,3 +1,4 @@
+using Lean.Pool;
 using UnityEngine;
 
 namespace TDS.Game.Player
@@ -31,7 +32,7 @@ namespace TDS.Game.Player
 
         private void CreateBullet()
         {
-            Instantiate(_bulletPrefab, _bulletSpawnPositionTransform.position, transform.rotation);
+            LeanPool.Spawn(_bulletPrefab, _bulletSpawnPositionTransform.position, transform.rotation);
         }
 
         private void Fire()

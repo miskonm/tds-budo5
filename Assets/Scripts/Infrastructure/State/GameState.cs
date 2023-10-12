@@ -1,9 +1,10 @@
+using TDS.Game.Player;
 using TDS.Infrastructure.Locator;
 using TDS.Services.Coroutine;
 using TDS.Services.Gameplay;
+using TDS.Services.Input;
 using TDS.Services.LevelManagement;
 using TDS.Services.Mission;
-using TDS.Services.SceneLoading;
 using TDS.Utility;
 using UnityEngine;
 
@@ -11,6 +12,12 @@ namespace TDS.Infrastructure.State
 {
     public class GameState : AppState
     {
+        #region Variables
+
+        private PlayerMovement _playerMovement;
+
+        #endregion
+
         #region Setup/Teardown
 
         public GameState(ServiceLocator serviceLocator) : base(serviceLocator) { }
@@ -30,8 +37,11 @@ namespace TDS.Infrastructure.State
 
         public override void Exit()
         {
+            _playerMovement.Dispose();
+
             ServiceLocator.Get<MissionGameService>().Dispose();
             ServiceLocator.Get<GameplayService>().Dispose();
+            ServiceLocator.Get<IInputService>().Dispose();
         }
 
         #endregion
@@ -42,6 +52,14 @@ namespace TDS.Infrastructure.State
         {
             ServiceLocator.Get<MissionGameService>().Initialize();
             ServiceLocator.Get<GameplayService>().Initialize();
+
+            _playerMovement = Object.FindObjectOfType<PlayerMovement>();
+            Transform playerMovementTransform = _playerMovement.transform;
+
+            IInputService inputService = ServiceLocator.Get<IInputService>();
+            inputService.Initialize(Camera.main, playerMovementTransform);
+
+            _playerMovement.Construct(inputService);
         }
 
         #endregion

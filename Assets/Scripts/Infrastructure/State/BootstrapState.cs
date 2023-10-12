@@ -1,6 +1,7 @@
 using TDS.Infrastructure.Locator;
 using TDS.Services.Coroutine;
 using TDS.Services.Gameplay;
+using TDS.Services.Input;
 using TDS.Services.LevelManagement;
 using TDS.Services.Mission;
 using TDS.Services.SceneLoading;
@@ -27,6 +28,12 @@ namespace TDS.Infrastructure.State
             ServiceLocator.Register(levelManagementService);
             ServiceLocator.RegisterMonoBeh<CoroutineRunner>();
             ServiceLocator.Register(new GameplayService(missionGameService, levelManagementService, StateMachine));
+
+#if UNITY_STANDALONE
+            ServiceLocator.Register<IInputService>(new StandaloneInputService());
+#elif UNITY_ANDROID || UNITY_IOS
+            ServiceLocator.Register<IInputService>(new MobileInputService());
+#endif
 
             StateMachine.Enter<MenuState>();
         }
