@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace TDS.Services.Input
 {
-    public class StandaloneInputService : IInputService
+    public class StandaloneInputService : MonoBehaviour, IInputService
     {
         #region Variables
 
@@ -11,10 +12,28 @@ namespace TDS.Services.Input
 
         #endregion
 
+        #region Events
+
+        public event Action OnAttack;
+
+        #endregion
+
         #region Properties
 
         public Vector2 Axes => new(UnityEngine.Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
         public Vector3 LookDirection => GetLookDirection();
+
+        #endregion
+
+        #region Unity lifecycle
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetButtonDown("Fire1"))
+            {
+                OnAttack?.Invoke();
+            }
+        }
 
         #endregion
 

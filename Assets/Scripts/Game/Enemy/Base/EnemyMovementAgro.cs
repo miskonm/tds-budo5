@@ -10,6 +10,9 @@ namespace TDS.Game.Enemy
         [SerializeField] private EnemyMovement _enemyMovement;
         [SerializeField] private EnemyIdle _idle;
         [SerializeField] private LayerMask _obstacleMask;
+        [Range(15, 360)]
+        [SerializeField] private int _angle;
+        
 
         private bool _isFollow;
 
@@ -47,6 +50,12 @@ namespace TDS.Game.Enemy
             }
 
             Vector3 direction = other.transform.position - transform.position;
+
+            if (!IsInVisibleAngle(direction))
+            {
+                return;
+            }
+            
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, direction.magnitude, _obstacleMask);
             if (hit.transform != null)
             {
@@ -55,6 +64,12 @@ namespace TDS.Game.Enemy
 
             _isFollow = true;
             SetTarget(other.transform);
+        }
+
+        private bool IsInVisibleAngle(Vector3 direction)
+        {
+            float angle = Vector3.Angle(transform.forward, direction);
+            return angle <= _angle / 2f;
         }
 
         private void SetTarget(Transform otherTransform)

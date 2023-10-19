@@ -30,9 +30,12 @@ namespace TDS.Infrastructure.State
             ServiceLocator.Register(new GameplayService(missionGameService, levelManagementService, StateMachine));
 
 #if UNITY_STANDALONE
-            ServiceLocator.Register<IInputService>(new StandaloneInputService());
+            ServiceLocator.RegisterMonoBeh<StandaloneInputService>();
 #elif UNITY_ANDROID || UNITY_IOS
             ServiceLocator.Register<IInputService>(new MobileInputService());
+#else
+            Debug.LogError($"[InputService] Unsupported platform. Choose Standalone");
+            ServiceLocator.RegisterMonoBeh<StandaloneInputService>();
 #endif
 
             StateMachine.Enter<MenuState>();
