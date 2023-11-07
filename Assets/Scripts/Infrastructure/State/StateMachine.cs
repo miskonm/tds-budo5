@@ -20,6 +20,14 @@ namespace TDS.Infrastructure.State
             _currentState = newState;
             newState.Enter();
         }
+        
+        public void Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
+        {
+            _currentState?.Exit();
+            TState newState = Create<TState>();
+            _currentState = newState;
+            newState.Enter(payload);
+        }
 
         #endregion
 

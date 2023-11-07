@@ -18,7 +18,10 @@ namespace TDS.Infrastructure.State
             ServiceLocator.Get<SceneLoadingService>().LoadScene(Scene.Menu);
         }
 
-        public override void Exit() { }
+        public override void Exit()
+        {
+            StateMachine.Enter<InitState, SceneType>(SceneType.Game);
+        }
 
         #endregion
     }

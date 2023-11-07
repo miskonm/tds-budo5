@@ -2,28 +2,32 @@ using TDS.Infrastructure.Locator;
 
 namespace TDS.Infrastructure.State
 {
-    public abstract class AppState : IState
+    public abstract class AppState : ExitableState, IState
     {
-        #region Properties
-
-        protected ServiceLocator ServiceLocator { get; }
-        protected StateMachine StateMachine => ServiceLocator.Get<StateMachine>();
-
-        #endregion
-
         #region Setup/Teardown
 
-        protected AppState(ServiceLocator serviceLocator)
-        {
-            ServiceLocator = serviceLocator;
-        }
+        protected AppState(ServiceLocator serviceLocator) : base(serviceLocator) { }
 
         #endregion
 
         #region IState
 
-        public abstract void Exit();
         public abstract void Enter();
+
+        #endregion
+    }
+
+    public abstract class AppState<T> : ExitableState, IPayloadState<T>
+    {
+        #region Setup/Teardown
+
+        protected AppState(ServiceLocator serviceLocator) : base(serviceLocator) { }
+
+        #endregion
+
+        #region IPayloadState<T>
+
+        public abstract void Enter(T payload);
 
         #endregion
     }
